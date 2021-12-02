@@ -54,15 +54,6 @@ def validate_data(values):
     
     return True
 
-def update_sales_worksheet(data):
-    """
-    Update sales worksheet, add new row with the list data provided. 
-    """
-    print("Updating sales worksheet...")
-    sales_worksheet = SHEET.worksheet('sales')
-    sales_worksheet.append_row(data)
-    print("Sales worksheet updated successfully.\n")
-
 def calculate_surplus_data(sales_row):
     """
     Compare sales with stock and calculate the surplus for each item type. 
@@ -82,14 +73,31 @@ def calculate_surplus_data(sales_row):
         surplus_data.append(surplus)
     return surplus_data
 
-def update_surplus_worksheet(data):
+def update_worksheet(data, sheet):
     """
-    Update surplus worksheet, add new row with the list data provided. 
+    Update worksheets, add new row with the list data provided. 
     """
-    print("Updating surplus worksheet...")
-    surplus_worksheet = SHEET.worksheet('surplus')
-    surplus_worksheet.append_row(data)
-    print("Surplus worksheet updated successfully.\n")
+    print(f"Updating {sheet} worksheet...")
+    worksheet = SHEET.worksheet(sheet)
+    worksheet.append_row(data)
+    print(f"{sheet} worksheet updated successfully.\n")
+
+def get_last_five_entries_sales():
+    """
+    Collects collumns of data from sales worksheet, collecting
+    the last 5 entries for each sandwich and returns the data
+    as a list of lists.
+
+    """
+    sales = SHEET.worksheet('sales')
+
+
+    collumns = []
+    for ind in range(1,7):
+        collumn = sales.col_values(ind)
+        collumns.append(collumn[-5:])
+    pprint(collumns)
+
 
 def main():
     """
@@ -98,10 +106,11 @@ def main():
     """
     data = get_sales_data()
     sales_data = [int(num) for num in data]
-    update_sales_worksheet(sales_data)
+    update_worksheet(sales_data,"sales")
     new_surplus_data = calculate_surplus_data(sales_data)
-    update_surplus_worksheet(new_surplus_data)
+    update_worksheet(new_surplus_data,"surplus")
     
 
 print("Welcome to Love Sadwiches Data Automation")
-main()
+# main()
+get_last_five_entries_sales()
